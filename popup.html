@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      padding: 16px;
+    }
+    h1 { font-size: 18px; margin-bottom: 12px; color: #00d9ff; }
+    .stats {
+      background: #16213e;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .stats-number { font-size: 32px; font-weight: bold; color: #00d9ff; }
+    .stats-label { font-size: 12px; color: #888; }
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .toggle {
+      width: 50px; height: 26px;
+      background: #444;
+      border-radius: 13px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .toggle.active { background: #00d9ff; }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px; height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 2px; left: 2px;
+      transition: transform 0.3s;
+    }
+    .toggle.active::after { transform: translateX(24px); }
+    label { font-size: 14px; }
+    .section { margin-bottom: 16px; }
+    .section-title { font-size: 12px; color: #888; margin-bottom: 8px; }
+    .site-list {
+      background: #16213e;
+      border-radius: 8px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .site-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .site-item:last-child { border-bottom: none; }
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #ff6b6b;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .add-row { display: flex; gap: 8px; margin-top: 8px; }
+    input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background: #16213e;
+      color: #eee;
+    }
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #00d9ff;
+      color: #1a1a2e;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #00b8d9; }
+    .cooldown-row { display: flex; align-items: center; gap: 8px; }
+    .cooldown-row input { width: 60px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>🛡️ Focus Guard</h1>
+  
+  <div class="stats">
+    <div class="stats-number" id="blockCount">0</div>
+    <div class="stats-label">distractions blocked</div>
+  </div>
+
+  <div class="toggle-row">
+    <label>Protection Active</label>
+    <div class="toggle" id="toggle"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">BLOCKED SITES</div>
+    <div class="site-list" id="siteList"></div>
+    <div class="add-row">
+      <input type="text" id="newSite" placeholder="e.g. twitter.com">
+      <button id="addBtn">Add</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">COOLDOWN PERIOD</div>
+    <div class="cooldown-row">
+      <input type="number" id="cooldown" min="1" max="60" value="5">
+      <span>minutes before allowing bypass</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

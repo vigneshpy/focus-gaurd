@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stay Focused</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+    .shield { font-size: 80px; margin-bottom: 20px; }
+    h1 { font-size: 36px; margin-bottom: 10px; color: #00d9ff; }
+    .site-name { 
+      font-size: 18px; 
+      color: #888; 
+      margin-bottom: 30px;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 20px;
+      border-radius: 20px;
+    }
+    .message {
+      max-width: 500px;
+      font-size: 20px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    .quote {
+      font-style: italic;
+      color: #aaa;
+      margin-bottom: 40px;
+      max-width: 400px;
+    }
+    .actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    button {
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover { transform: translateY(-2px); }
+    .primary {
+      background: #00d9ff;
+      color: #1a1a2e;
+    }
+    .secondary {
+      background: transparent;
+      border: 2px solid #444;
+      color: #888;
+    }
+    .secondary:hover { border-color: #666; color: #aaa; }
+    .bypass-section {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid #333;
+      color: #666;
+      font-size: 14px;
+    }
+    .bypass-section button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+    .countdown {
+      font-size: 48px;
+      font-weight: bold;
+      color: #00d9ff;
+      margin: 20px 0;
+    }
+    .hidden { display: none; }
+    .breathing {
+      animation: breathe 4s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shield breathing">🛡️</div>
+  <h1>Hold Up!</h1>
+  <div class="site-name" id="siteName">discord.com</div>
+  
+  <div class="message" id="mainMessage">
+    You wanted to stay focused, remember?<br>
+    Take a breath. What were you actually trying to do?
+  </div>
+  
+  <div class="quote" id="quote"></div>
+  
+  <div class="actions" id="mainActions">
+    <button class="primary" onclick="goBack()">← Go Back to Work</button>
+    <button class="secondary" onclick="closeTab()">Close Tab</button>
+  </div>
+
+  <div class="bypass-section" id="bypassSection">
+    <p>Really need to check it? Wait and reflect first.</p>
+    <button class="secondary" onclick="startBypass()">I understand, let me through...</button>
+  </div>
+
+  <div class="hidden" id="countdownSection">
+    <p>Take a deep breath. The bypass will be available in:</p>
+    <div class="countdown" id="countdown">30</div>
+    <p style="color: #666; font-size: 14px;">Use this time to ask: Is this urgent or just a habit?</p>
+  </div>
+
+  <div class="hidden" id="confirmSection">
+    <p>You can now proceed. Remember, you set these limits for a reason.</p>
+    <button class="secondary" onclick="proceedAnyway()">Proceed to site (5 min access)</button>
+  </div>
+
+  <script>
+    const quotes = [
+      "The successful person has the habit of doing things failures don't like to do.",
+      "Focus on being productive instead of busy.",
+      "Your future self will thank you for staying focused right now.",
+      "Discipline is choosing between what you want now and what you want most.",
+      "Small disciplines repeated lead to great achievements.",
+      "The price of distraction is paid in missed potential."
+    ];
+
+    const params = new URLSearchParams(window.location.search);
+    const site = params.get('site') || 'this site';
+    document.getElementById('siteName').textContent = site;
+    document.getElementById('quote').textContent = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
+
+    function goBack() {
+      history.back();
+      setTimeout(() => window.close(), 100);
+    }
+
+    function closeTab() {
+      window.close();
+    }
+
+    function startBypass() {
+      document.getElementById('bypassSection').classList.add('hidden');
+      document.getElementById('countdownSection').classList.remove('hidden');
+      
+      let seconds = 30;
+      const countdownEl = document.getElementById('countdown');
+      
+      const interval = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = seconds;
+        
+        if (seconds <= 0) {
+          clearInterval(interval);
+          document.getElementById('countdownSection').classList.add('hidden');
+          document.getElementById('confirmSection').classList.remove('hidden');
+        }
+      }, 1000);
+    }
+
+    function proceedAnyway() {
+      chrome.runtime.sendMessage({ action: 'tempUnblock' }, () => {
+        window.location.href = 'https://' + site;
+      });
+    }
+  </script>
+</body>
+</html>
